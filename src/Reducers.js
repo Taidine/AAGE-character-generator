@@ -1,4 +1,4 @@
-import Redux, { createStore, combineReducers } from 'redux';
+import { combineReducers } from 'redux';
 
 // Reducers
 
@@ -15,12 +15,15 @@ const addInputR = (state, action) => {
 }
 
 const editInputR = (state, action) => {
-  const new_input = {
-    name: action.name ? action.name : state.name ? state.name : '',
-    total: action.total ? action.total : state.total ? state.total : 0
-  };
-  if (action.def) {new_input.def = action.def};
-  if (action.notes) {new_input.notes = action.notes};
+  var new_input = {}
+  if (action.id === state.id) {
+    new_input = {
+      name: action.name ? action.name : state.name ? state.name : '',
+      total: action.total ? action.total : state.total ? state.total : 0
+    };
+    if (action.def) {new_input.def = action.def};
+    if (action.notes) {new_input.notes = action.notes};
+  }
   const new_state = Object.assign ({}, state, new_input);
   return new_state;
 }
@@ -28,8 +31,7 @@ const editInputR = (state, action) => {
 const name = (state='', action) => {
   switch (action.type) {
     case ('EDIT_NAME'): return action.name
-  default:
-    return state;
+    default: return state;
   }
 }
 
@@ -53,9 +55,7 @@ const virtues = (state=[], action) => {
   switch (action.type) {
     case ('ADD_VIRTUE'): return addInputR (state, action)
     case ('EDIT_VIRTUE'):
-      return state.map( v => {
-          if (action.id == v.id) {return editInputR(v, action)};
-      });
+      return state.map( v => editInputR(v, action));
   default:
     return state;
   }
@@ -65,11 +65,9 @@ const skills = (state=[], action) => {
   switch (action.type) {
     case ('ADD_SKILL'): return addInputR (state, action)
     case ('EDIT_SKILL'):
-      return state.map( v => {
-          if (action.id == v.id) {return editInputR(v, action)};
-      });
-      default:
-        return state;
+      return state.map( v => editInputR(v, action));
+    default:
+      return state;
   }
 }
 
@@ -77,11 +75,9 @@ const resources = (state=[], action) => {
   switch (action.type) {
     case ('ADD_RESOURCE'): return addInputR (state, action)
     case ('EDIT_RESOURCE'):
-      return state.map( r => {
-          if (action.id == r.id) {return editInputR(r, action)};
-      });
-      default:
-        return state;
+      return state.map( r => editInputR(r, action));
+    default:
+      return state;
   }
 }
 
@@ -90,9 +86,10 @@ const powers = (state=[], action) => {
     case ('ADD_POWER'): return state.concat([{id: action.id, name: '', description: ''}])
     case ('EDIT_POWER'):
       return state.map( p => {
-          if (action.id == p.id) {
+          if (action.id === p.id) {
             const new_p = Object.assign ({}, p, {name: action.name, description:action.description});
-            return new_p};
+            return new_p}
+          else {return p};
       });
     default:
       return state;
@@ -108,4 +105,4 @@ const reducers = combineReducers ({
   powers,
 })
 
-export default reducers
+export default reducers;

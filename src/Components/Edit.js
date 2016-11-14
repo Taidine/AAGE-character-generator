@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
+import { NameInput } from './Name';
+import { connect } from 'react-redux';
 
 class Edit extends Component {
-  constructor() {
-    super();
-    this.state = {
-        name: "",
-        virtues: [],
-        skills: [],
-        powers:[]
-      };
-  }
-  changeName(name) {
-    this.setState({name: name});
-  }
   render() {
     return (
       <div className="container">
@@ -21,7 +11,9 @@ class Edit extends Component {
             <h2>AAGE Character Generator</h2>
           </div>
           <div className="App-body body">
-            Stuff here.
+            Enter your character information below.
+            <br />
+            <NameInput default_value={this.props.name} handleChange={(e) => this.props.dispatch({type: 'EDIT_NAME', name: e.target.value}) }/>
           </div>
         </div>
       </div>
@@ -29,4 +21,13 @@ class Edit extends Component {
   }
 }
 
-export default Edit;
+const mapStateToProps = (state) => {
+  return {...state}
+}
+
+const EditContainer = connect(
+  mapStateToProps,
+  null
+)(Edit)
+
+export default EditContainer;
